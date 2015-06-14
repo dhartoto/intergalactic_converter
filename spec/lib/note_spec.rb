@@ -11,10 +11,6 @@ describe Note do
         allow(File).to receive(:exists?){ false }
       end
 
-      it 'should return a Struct' do
-        resp = Note.import
-        expect(resp).to be_a(Struct)
-      end
       it 'responds false to loaded?' do
         resp = Note.import
         expect(resp.loaded?).to eq(false)
@@ -38,10 +34,6 @@ describe Note do
         allow(File).to receive_messages(exists?: true, read: data)
       end
 
-      it 'should return a Struct' do
-        resp = Note.import
-        expect(resp).to be_a(Struct)
-      end
       it 'loaded? should return false' do
         resp = Note.import
         expect(resp.loaded?).to eq(false)
@@ -66,10 +58,6 @@ describe Note do
         allow(File).to receive_messages(exists?: true, read: data)
       end
 
-      it 'should return a Struct' do
-        resp = Note.import
-        expect(resp).to be_a(Struct)
-      end
       it 'loaded? should return true' do
         resp = Note.import
         expect(resp.loaded?).to eq(true)
