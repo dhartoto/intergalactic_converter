@@ -1,10 +1,10 @@
 class RomanNumerals
 
   def self.create(args)
-    ig_query = args[:ig_query].split(' ')
+    galactic_numerals = args[:galactic_numerals].split(' ')
     note = args[:note]
     num = []
-    ig_query.each do |string|
+    galactic_numerals.each do |string|
       num << note[string]
     end
     num.join('')
