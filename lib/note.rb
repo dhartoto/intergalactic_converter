@@ -1,5 +1,3 @@
-require 'pry'
-
 class Note
 
   FILE_PATH = "public/"

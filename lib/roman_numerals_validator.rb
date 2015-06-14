@@ -45,6 +45,27 @@ class RomanNumeralsValidator
     self
   end
 
+  # Response = Struct.new(:valid?, :message)
+  # def validate_roman_numerals
+  #   if valid?
+  #     resp = Response.new(true, nil)
+  #   else
+  #     resp = Response.new(false, "Input error: Check the order of your Intergalactic numerals")
+  #   end
+  # end
+  #
+  # def valid?
+  #   if repeat_more_than_three_times
+  #     false
+  #   elsif invalid_subtraction
+  #     false
+  #   elsif subtract_more_than_one_small_value
+  #     false
+  #   else
+  #     true
+  #   end
+  # end
+
   def repeat_more_than_three_times
     query.include?('IIII') || query.include?("XXXX") || query.include?("MMMM")
   end

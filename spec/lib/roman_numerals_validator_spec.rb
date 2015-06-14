@@ -52,7 +52,6 @@ describe RomanNumeralsValidator do
 
   # Commented out because method is private
   # Test written to build private method with rules
-  #
   # describe '#valid?' do
   #   context 'returns true' do
   #     it 'when valid' do
