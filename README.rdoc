@@ -1,0 +1,106 @@
+INTERGALACTIC NUMERALS CONVERTER
+By: Dito Hartoto
+
+Contents:
+- Versions
+- Summary
+- Design
+- Instructions
+- Limitations
+- Assumptions
+
+Versions:
+- ruby version 2.2.0
+- rspec 3.2.3
+
+Summary:
+This Ruby CLI application was built to practice my Object Oriented Design.
+The application is built for fictitious intergalactic metal merchants with two
+use cases:
+
+1) Intergalactic metal merchants use the application to convert Intergalactic
+   numerals to human numerals. For example 'prok glob' converts to 4.
+
+2) They also use the application to calculate the total value of materials
+   from intergalactic numerals. For example 'prok glob platinum' calculates the
+   value of 4 units of platinum ($20 see below), which equals $80.
+
+Metal Merchants record values of the Intergalactic numerals in a note.txt file,
+which is imported and used for conversion. The note.txt file is in the following
+format and saved in the 'public' folder:
+  glob is I
+  prok is V
+  pish is X
+  tegj is L
+
+Intergalactic numerals are similar to roman numerals. The table below lists the
+value of each intergalactic numeral:
+
+1   = I = glob
+5   = V = prok
+10  = X = pish
+50  = L = tegj
+100 = C = zyah
+
+Intergalactic metal merchants trade in 4 types of metal with fixed market value:
+silver   = $17
+gold     = $14,450
+iron     = $195.5
+platinum = $20
+
+Design:
+- The application has the following objects:
+  - QueryEngine: responsibility is to direct user query through validation to conversion.
+  - Note: responsible for importing note.txt file.
+  - GalacticNumeralsValidator: responsible for validating if the intergalactic
+    numerals entered by the user is correct.
+  - RomanNumerals: responsible for converting from intergalactic numerals to
+    roman numerals.
+  - RomanNumeralsValidator: responsible for checking if the user input passes the
+    roman numerals rules as stated in the assignment (see Assumptions).
+  - RomanNumeralsConverter: responsible for converting roman numerals to integers
+
+- The application has 1 module:
+  - RomanReference: provides the method to convert from single roman symbols to
+    integers. This is shared between RomanNumeralsConverter and RomanNumeralsValidator.
+
+Instructions:
+- Note file is stored in the public folder.
+- To run the application enter 'ruby converter.rb' from the applications
+  root directory.
+- The application will prompt you on what to do.
+  - Choose 1 if you only want to convert intergalactic (IG) numerals
+  - Choose 2 if you want to calculate the total credit of materials given in
+    IG numerals.
+  - Choose 3 to exit the application.
+  - The application will continue until 3 is selected.
+
+To run the tests enter 'rspec' from the application root
+
+Limitations:
+- Most of the apps that I've built to date is with Rails. While it makes
+  development and testing convenient, I realised that it limited my
+  experience in TDD of pure ruby applications. My limitations include testing
+  inputs and outputs from/to the console.
+- I'm still learning rspec and have found the new Mocks and Stubs difficult to
+  master, which I think shows in my tests.
+
+Assumptions:
+- Commoditiy values are constant:
+  - Silver = 17
+  - Gold = 14450
+  - Iron = 195.5
+
+- Error types:
+  - I count > 3 (only in series)
+  - X count > 3 (only in series)
+  - M count > 3 (only in series)
+
+  - V can only be subtracted by I
+  - X can only be subtracted by I
+  - L can only be subtracted by X
+  - C can only be subtracted by X
+  - D can only be subtracted by C
+  - M can only be subtracted by C
+  - Cannot subtract any sym by V, L or D
+  - only can subtract one small value with one large value
