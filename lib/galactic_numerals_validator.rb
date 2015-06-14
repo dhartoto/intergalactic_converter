@@ -1,36 +1,31 @@
 class GalacticNumeralsValidator
 
-  attr_accessor :query, :note
+  attr_accessor :query, :note, :valid, :error_message
 
   def initialize
-    @query = ''
-    @note = ''
+    self.valid = true
   end
 
   def validate(obj)
-    self.query = obj.ig_query
+    self.query = obj.query.galactic_numerals
     self.note = obj.note
     validate_galactic_numerals
   end
 
-  private
-
-  Response = Struct.new(:valid?, :message)
-
-  def validate_galactic_numerals
-    if valid?
-      resp = Response.new(true, nil)
-    else
-      msg = "Input error: please check the spelling of your intergalactic numerals."
-      resp = Response.new(false, msg)
-    end
-  end
-
   def valid?
-    valid = true
-    query.split(' ').each do |num|
-      valid = false if not note.keys.include?(num)
-    end
     valid
   end
+
+  private
+
+  def validate_galactic_numerals
+    query.split(' ').each do |num|
+      if not note.keys.include?(num)
+        self.valid = false
+        self.error_message = "Input error: please check the spelling of your intergalactic numerals."
+      end
+    end
+    self
+  end
+
 end
