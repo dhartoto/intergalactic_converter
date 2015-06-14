@@ -14,16 +14,17 @@ class QueryEngine
     'platinum' => 20
     }
 
-  attr_accessor :type, :query, :validators
+  attr_accessor :type, :query, :validators, :output
   attr_reader :materials_value, :note, :converter
 
   def initialize(input)
     @materials_value = MATERIALS_VALUE
-    @note = load_note
-    @type = input
-    @query = Query.new(type: type)
-    @validators = set_validators
-    @converter = RomanNumeralsConverter.new
+    @note            = load_note
+    @type            = input
+    @query           = Query.new(type: type)
+    @validators      = set_validators
+    @converter       = RomanNumeralsConverter.new
+    @output          = nil
   end
 
   def run
@@ -79,17 +80,18 @@ class QueryEngine
 
   def convert_query
     if type == '1'
-      puts "#{query.galactic_numerals} is #{converter.convert(self)}"
+      self.output = "#{query.galactic_numerals} is #{converter.convert(self)}"
     else
-      puts material_calc_response
+      material_calc_response
     end
+    puts output
   end
 
   def material_calc_response
     if query.galactic_numerals == ''
-      "#{query.material.capitalize} is #{materials_value[query.material]} Credits."
+      self.output = "#{query.material.capitalize} is #{materials_value[query.material]} Credits."
     else
-      "#{query.galactic_numerals} #{query.material.capitalize} is #{converter.convert(self) * materials_value[query.material]} Credits."
+      self.output = "#{query.galactic_numerals} #{query.material.capitalize} is #{converter.convert(self) * materials_value[query.material]} Credits."
     end
   end
 

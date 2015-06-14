@@ -12,33 +12,34 @@ describe QueryEngine do
 
     context 'initialization success' do
       let(:resp) { double('resp') }
-      let(:content) { {'glob'=>'I', 'prok'=>'V', 'pish'=>'X', 'tegj'=>'L'} }
+      let(:content) { {'glob'=>'I', 'prok'=>'V', 'pish'=>'X', 'tegj'=>'L', 'zyah'=>'C'} }
 
       before do
         allow(Note).to receive(:import) { resp }
         allow(resp).to receive_messages(loaded?: true, content: content)
       end
 
-      it 'loads commodities in a Struct' do
-        resp = QueryEngine.new('1')
-        expect(resp.materials).to be_a(Hash)
-      end
       it 'imports notes' do
         resp = QueryEngine.new('1')
-        expect(resp.note).to be_a(Hash)
-      end
-      it 'sets num_query to blank string' do
-        resp = QueryEngine.new('1')
-        expect(resp.num_query).to eq("")
-      end
-      it 'sets mat_query to blank string' do
-        resp = QueryEngine.new('1')
-        expect(resp.mat_query).to eq("")
+        expect(resp.note).to eq(content)
       end
       it 'sets converter type' do
         resp = QueryEngine.new('1')
         expect(resp.type).to eq('1')
       end
+      it 'sets query to be an instance of Query' do
+        resp = QueryEngine.new('1')
+        expect(resp.query).to be_an_instance_of(Query)
+      end
+      it 'sets converter to be an instance of RomanNumeralsConverter' do
+        resp = QueryEngine.new('1')
+        expect(resp.converter).to be_an_instance_of(RomanNumeralsConverter)
+      end
+      it 'sets output to nil' do
+        resp = QueryEngine.new('1')
+        expect(resp.output).to eq(nil)
+      end
+
     end
 
     context 'when note fails to load' do
@@ -59,58 +60,37 @@ describe QueryEngine do
   end
 
   describe '#run' do
-    let(:resp) { double('resp') }
-    let(:gnv_resp) { double('gnv_resp') }
-
-
-    before do
-      allow(GalacticNumeralsValidator).to receive(:new){ resp }
-      allow(RomanNumeralsValidator).to receive(:new){ resp }
-      allow(Note).to receive(:import){ resp }
-      allow(resp).to receive_messages(
-        loaded?: true,
-        content: {"glob"=>"I", "prok"=>"V", "pish"=>"X", "tegj"=>"L"},
-        validate: gnv_resp
-      )
-      allow(gnv_resp).to receive_messages(valid?: true, message:'')
-    end
 
     context 'when converter type 1' do
+
       let(:app) { QueryEngine.new('1') }
 
-      it 'sets ig_query' do
+      it 'returns conversion of intergalactic numerals ' do
+        allow_any_instance_of(Query).to receive(:roman_numerals) { 'IV' }
         allow(app).to receive(:gets) {'glob prok'}
         app.run
-        expect(app.ig_query).to eq('glob prok')
+        expect(app.output).to eq('glob prok is 4')
       end
     end
 
     context 'when converter type 2' do
       let(:app) { QueryEngine.new('2') }
-      let(:converter) { double('converter') }
 
-      before do
-        allow(RomanNumeralsConverter).to receive(:new){ converter }
-        allow(converter).to receive(:convert){ 1 }
+      context 'when user enters intergalactic numeral with material type' do
+        it 'returns total value of material' do
+          allow(app).to receive(:gets) {'glob prok Platinum'}
+          app.run
+          expect(app.output).to eq('glob prok Platinum is 80 Credits.')
+        end
       end
-
-      it 'sets ig_query' do
-        allow(app).to receive(:gets) {'glob prok Silver'}
-        app.run
-        expect(app.ig_query).to eq('glob prok')
-      end
-      it 'sets mat_query' do
-        allow(app).to receive(:gets) {'glob prok Silver'}
-        app.run
-        expect(app.mat_query).to eq('silver')
-      end
-      it 'sets mat_query to platinum' do
-        allow(app).to receive(:gets) {'glob prok Platinum'}
-        app.run
-        expect(app.mat_query).to eq('platinum')
+      context 'when user only enters a material type' do
+        it 'returns the value of the material' do
+          allow(app).to receive(:gets) {'Platinum'}
+          app.run
+          expect(app.output).to eq('Platinum is 20 Credits.')
+        end
       end
     end
-
   end
 
 end
