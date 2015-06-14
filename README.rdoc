@@ -1,5 +1,5 @@
 INTERGALACTIC NUMERALS CONVERTER
-By: Dito Hartoto
+- by: Dito Hartoto
 
 Contents:
 - Versions
@@ -14,7 +14,7 @@ Versions:
 - rspec 3.2.3
 
 Summary:
-This Ruby CLI application was built to practice my Object Oriented Design.
+- This Ruby CLI application was built to practice my Object Oriented Design.
 The application is built for fictitious intergalactic metal merchants with two
 use cases:
 
