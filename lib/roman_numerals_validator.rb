@@ -4,11 +4,10 @@ require_relative 'roman_numerals'
 class RomanNumeralsValidator
   include RomanReference
 
-  attr_accessor :integers, :query, :symbol
+  attr_accessor :integer_array, :query, :symbol, :valid, :error_message
 
   def initialize
-    @query = ''
-    @integers = ''
+    self.valid = true
   end
 
   def validate(obj)
@@ -16,36 +15,34 @@ class RomanNumeralsValidator
     validate_roman_numerals
   end
 
+  def valid?
+    valid
+  end
+
   private
 
   def set_instance_variables(obj)
     self.query = RomanNumerals.create(
-      ig_query: obj.ig_query,
+      galactic_numerals: obj.query.galactic_numerals,
       note: obj.note
       )
-    obj.num_query = query
-    self.integers = convert_symbols_to_integers(query)
+    obj.query.roman_numerals = query
+    self.integer_array = convert_symbols_to_integers(query)
   end
 
-  Response = Struct.new(:valid?, :message)
   def validate_roman_numerals
-    if valid?
-      resp = Response.new(true, nil)
-    else
-      resp = Response.new(false, "Input error: Check the order of your Intergalactic numerals")
-    end
-  end
-
-  def valid?
+    error_message = "Input error: Check the order of your Intergalactic numerals"
     if repeat_more_than_three_times
-      false
+      self.valid = false
+      self.error_message = error_message
     elsif invalid_subtraction
-      false
+      self.valid = false
+      self.error_message = error_message
     elsif subtract_more_than_one_small_value
-      false
-    else
-      true
+      self.valid = false
+      self.error_message = error_message
     end
+    self
   end
 
   def repeat_more_than_three_times
@@ -53,23 +50,23 @@ class RomanNumeralsValidator
   end
 
   def invalid_subtraction
-    if integers.include?(10)
+    if integer_array.include?(10)
       resp = check(10)
       return true if resp == true
     end
-    if integers.include?(50)
+    if integer_array.include?(50)
       resp = check(50)
       return true if resp == true
     end
-    if integers.include?(100)
+    if integer_array.include?(100)
       resp = check(100)
       return true if resp == true
     end
-    if integers.include?(500)
+    if integer_array.include?(500)
       resp = check(500)
       return true if resp == true
     end
-    if integers.include?(1000)
+    if integer_array.include?(1000)
       resp = check(1000)
       return true if resp == true
     end
@@ -77,16 +74,16 @@ class RomanNumeralsValidator
   end
 
   def subtract_more_than_one_small_value
-    while integers.length >= 3
-      return true if integers[0] < integers[2] || integers[1] < integers[2]
-      integers.shift
+    while integer_array.length >= 3
+      return true if integer_array[0] < integer_array[2] || integer_array[1] < integer_array[2]
+      integer_array.shift
     end
   end
 
   def check(nr)
-    nr_index = integers.index(nr)
+    nr_index = integer_array.index(nr)
     unless nr_index == 0
-      left_of_nr = integers[nr_index - 1]
+      left_of_nr = integer_array[nr_index - 1]
       if left_of_nr < nr && left_of_nr == sym_constraints[nr]
         return false
       else

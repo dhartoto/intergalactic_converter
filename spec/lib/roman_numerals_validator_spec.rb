@@ -1,31 +1,34 @@
 require 'spec_helper'
+require 'ostruct'
 require 'roman_numerals_validator'
 
 describe RomanNumeralsValidator do
 
+  describe '.new' do
+    it 'sets valid to true' do
+      validator = RomanNumeralsValidator.new
+      expect(validator).to be_valid
+    end
+  end
+
   describe '#validate' do
 
-    Queryengine = Struct.new(:ig_query, :note, :num_query)
     let(:note) { {"glob"=>"I", "prok"=>"V", "pish"=>"X", "tegj"=>"L"} }
-    let(:query) { Queryengine.new('glob prok', note)}
+    let(:test_query) { OpenStruct.new(galactic_numerals: 'glob prok') }
+    let(:query_engine) { OpenStruct.new(query: test_query, note: note) }
 
     before do
       allow(RomanNumerals).to receive(:create) {'XLVI'}
     end
 
-    it 'returns Struct' do
-      resp = RomanNumeralsValidator.new.validate(query)
-      expect(resp).to be_a(Struct)
-    end
-
     context 'when query is valid' do
-      it 'valid? returns true' do
-        resp = RomanNumeralsValidator.new.validate(query)
-        expect(resp.valid?).to be_truthy
+      it 'returns true' do
+        resp = RomanNumeralsValidator.new.validate(query_engine)
+        expect(resp).to be_valid
       end
       it 'message returns nil' do
-        resp = RomanNumeralsValidator.new.validate(query)
-        expect(resp.message).to be_nil
+        resp = RomanNumeralsValidator.new.validate(query_engine)
+        expect(resp.error_message).to be_nil
       end
     end
 
@@ -36,19 +39,20 @@ describe RomanNumeralsValidator do
       end
 
       it 'valid? returns false' do
-        resp = RomanNumeralsValidator.new.validate(query)
+        resp = RomanNumeralsValidator.new.validate(query_engine)
         expect(resp.valid?).to eq(false)
       end
       it 'returns input error message' do
-        resp = RomanNumeralsValidator.new.validate(query)
+        resp = RomanNumeralsValidator.new.validate(query_engine)
         msg = "Input error: Check the order of your Intergalactic numerals"
-        expect(resp.message).to eq(msg)
+        expect(resp.error_message).to eq(msg)
       end
     end
   end
 
   # Commented out because method is private
   # Test written to build private method with rules
+  #
   # describe '#valid?' do
   #   context 'returns true' do
   #     it 'when valid' do
