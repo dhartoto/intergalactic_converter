@@ -10,7 +10,7 @@ class RomanNumeralsConverter
   end
 
   def convert(obj)
-    self.integers = convert_symbols_to_integers(obj.num_query).reverse
+    self.integers = convert_symbols_to_integers(obj.query.roman_numerals).reverse
     convert_roman_numerals_to_numbers
   end
 
